@@ -5,9 +5,9 @@ from pathlib import Path
 from datetime import datetime
 from dataloader.utils import LoadResult
 from .abstract_data_loader import DataLoaderABC
+from dataloader.utils import production_stage_schedule
 
-# TODO: Define in dataloader.utils or config module
-production_stage_schedule = []
+
 
 
 class StockLoader(DataLoaderABC):

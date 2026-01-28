@@ -39,7 +39,7 @@ class InvProcessor(ProcessorAbstract):
             pl.lit("Initial Inventory").alias("Customer"),
         ).rename(need_to_change_name)
 
-    def process(self, lr: LoadResult) -> LoadResult:
+    def process(self, lr: LoadResult, **kwargs) -> LoadResult:
         schema = self.schema_cls()
 
         out = (

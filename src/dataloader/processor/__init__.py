@@ -1,3 +1,4 @@
+from .abstract_processor import ProcessorAbstract
 from .bo_processor import BOProcessor
 from .pos_processor import POSProcessor
 from .spa_processor import SPAProcessor

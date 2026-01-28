@@ -37,6 +37,7 @@ class POSProcessor(ProcessorAbstract):
         # Only add to lr when shcnema has confimred
 
         if lr.frame.limit(1).collect().is_empty():
+            print("No POS Loaded")
             return lr
 
         change_to_upper_case = ["Sales Team", "Business Segment", "Disti"]

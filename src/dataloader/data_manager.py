@@ -19,9 +19,7 @@ if TYPE_CHECKING:
     from dataloader.utils import LoadResult
 
 # Type alias for registered data source names
-DataSourceName = Literal[
-    "stock", "bo", "inv", "pos", "trans", "spa", "price", "forecast", "msrp"
-]
+DataSourceName = Literal["stock", "bo", "inv", "pos", "trans", "forecast", "msrp"]
 
 
 @dataclass
@@ -127,8 +125,8 @@ class DataManager:
         self.register(
             "trans", TransactionLoader, TransProcessor, dependencies=["stock"]
         )
-        self.register("spa", SPALoader, SPAProcessor)
-        self.register("price", PriceLoader, PriceProcessor)
+        # self.register("spa", SPALoader, SPAProcessor)
+        # self.register("price", PriceLoader, PriceProcessor)
         self.register("forecast", ForecastLoader, ForecastProcessor)
         self.register("msrp", AMZPriceLoader, AMZPriceProcessor)
 
@@ -214,6 +212,8 @@ class DataManager:
 
         # Merge overrides with inline kwargs (inline takes precedence)
         merged_kwargs = {**self._overrides.get(name, {}), **kwargs, **dep_results}
+        if name == "pos" and "path" not in merged_kwargs:
+            raise ValueError("No POS path provided")
 
         # Load and process
         result = self._load_and_process(source, **merged_kwargs)
@@ -344,29 +344,3 @@ class DataManager:
         cached_count = len(self._cache)
         total_count = len(self._sources)
         return f"DataManager(sources={total_count}, cached={cached_count}, data_dir={self._data_dir})"
-
-
-# Singleton instance for convenience (optional usage)
-_default_manager: DataManager | None = None
-
-
-def get_manager(data_dir: str | Path = "./data") -> DataManager:
-    """
-    Get or create the default DataManager instance (singleton pattern).
-
-    Args:
-        data_dir: Base directory for data files.
-
-    Returns:
-        The default DataManager instance.
-    """
-    global _default_manager
-    if _default_manager is None:
-        _default_manager = DataManager(data_dir=data_dir)
-    return _default_manager
-
-
-def reset_manager() -> None:
-    """Reset the default manager instance."""
-    global _default_manager
-    _default_manager = None

@@ -96,12 +96,18 @@ class TransProcessor(ProcessorAbstract):
         self,
         lr: LoadResult,
         include_past=True,
-        stock=None | LoadResult,
+        stock: None | LoadResult = None,
         *args,
         **kwargs,
     ):
         schema = self.schema_cls()
         lf = lr.frame.with_columns(
+            pl.col("Order Date")
+            # 1. Normalize: Turn empty strings into actual Nulls
+            .replace("", None)
+            # 2. Fill: Now fill_null catches everything
+            .fill_null(pl.col("Date").dt.strftime("%d-%b-%Y"))
+        ).with_columns(
             pl.col("Order Date").str.strptime(pl.Date, "%d-%b-%Y", strict=True),
         )
 

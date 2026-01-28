@@ -83,8 +83,10 @@ class DataLoaderABC(ABC):
                 return self._read_csv(stream, name)
 
     def _load_from_path(self, path: str):
+        print(path)
         p = Path(path)
         if not p.exists():
+            print(f"{p} does not exist")
             return LoadResult(frame=pl.LazyFrame(), context={})
 
         suffix = p.suffix.lower()
@@ -107,6 +109,7 @@ class DataLoaderABC(ABC):
         # 1. 优先检查显式的 path 参数
         if path:
             return self._load_from_path(path)
+        print("Loader no Path")
 
         # 2. 检查 kwargs 中的 byte 流 (通常用于 API 上传或内存处理)
         # 需要同时提供 'byte' 和 'name' (为了判断格式)
@@ -116,6 +119,7 @@ class DataLoaderABC(ABC):
 
             if byte_data and file_name:
                 return self._load_from_stream(byte_data, file_name)
+        print("Loader no Byte")
 
         # 3. 如果都没有，尝试使用类属性定义的默认 file_name
         if self.file_name:
@@ -125,4 +129,6 @@ class DataLoaderABC(ABC):
             return self._load_from_path(default_path)
 
         # 4. 兜底返回空结果
+        print("Loader no file name")
+        print("Loaded nothing")
         return LoadResult(frame=pl.LazyFrame(), context={})

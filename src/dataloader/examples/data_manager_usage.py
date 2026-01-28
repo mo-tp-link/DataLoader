@@ -128,20 +128,6 @@ def inject_into_class():
     print(result)
 
 
-def singleton_usage():
-    """单例模式：全局共享 DataManager"""
-    from dataloader import get_manager, reset_manager
-
-    # 获取全局单例
-    dm1 = get_manager()
-    dm2 = get_manager()
-
-    assert dm1 is dm2  # 同一个实例
-
-    # 重置单例
-    reset_manager()
-
-
 def status_inspection():
     """状态检查：查看数据源信息"""
     dm = DataManager()
