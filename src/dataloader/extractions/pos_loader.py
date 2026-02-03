@@ -10,8 +10,8 @@ class POSLoader(DataLoaderABC):
     datetime_cols = ["Created Time"]
     str_cols = [
         "Invoice #",
-        "Year-Month",
-        "MFG#",
+        # "Year-Month",
+        "Item Model",
         "BU",
         "Category",
         "Sub-Category",
@@ -22,8 +22,8 @@ class POSLoader(DataLoaderABC):
         "Disti",
         "Account Manager",
         "Business Segment",
-        "_Account Manager At the Time",
-        "_Business Segment At the Time",
+        # "_Account Manager At the Time",
+        # "_Business Segment At the Time",
         "VIR Exclusion",
         "Sales Team",
         "Buy In Group",

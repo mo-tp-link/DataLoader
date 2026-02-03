@@ -107,7 +107,7 @@ def build_stockplan_schema(
     ]
     partner_cols = [
         # "best_buy", # renamed to bby_on_hand
-        "amazon_on_hand",
+        "amazon_total",
         # "amazon_in_transit", Mer
     ]
     total_cols = ["produce_transit_inventory_total"]

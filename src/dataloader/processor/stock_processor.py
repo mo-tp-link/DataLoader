@@ -28,7 +28,7 @@ class StockProcessor(ProcessorAbstract):
             )
             .with_columns(
                 (pl.col("amazon_on_hand") + pl.col("amazon_in_transit")).alias(
-                    "amazon_on_hand"
+                    "amazon_total"
                 )
             )
             .rename({"best_buy": "bby_on_hand"})

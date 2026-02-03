@@ -35,7 +35,7 @@ class POSSchema:
     date_cols: list[str] = field(
         default_factory=lambda: [
             "created_time",
-            "year_month",
+            # "year_month",
             "year",
             "month",
             "invoice_week",

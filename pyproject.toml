@@ -1,0 +1,29 @@
+[project]
+name = "dataloader"
+version = "0.1.0"
+description = "A modular data loading and processing framework with caching and dependency resolution"
+readme = "README.md"
+authors = [
+    { name = "Mo Li", email = "mo.li@tp-link.com" }
+]
+requires-python = ">=3.12"
+keywords = ["data", "etl", "polars", "pipeline", "loader"]
+dependencies = [
+    "fastexcel>=0.19.0",
+    "polars>=1.37.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.7,<0.10.0"]
+build-backend = "uv_build"
+
+[project.scripts]
+dataloader = "dataloader.main:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+]
+
+

@@ -45,14 +45,16 @@ class POSProcessor(ProcessorAbstract):
         out = (
             lr.frame.with_columns(
                 *(self.clean_cat_str(c) for c in change_to_upper_case),
-                pl.col("MFG#").str.to_uppercase().alias("MFG#"),
-                cap_name=self.clean_cap_name("MFG#"),
+                pl.col("Item Model").str.to_uppercase(),
                 cap_cust=self.clean_company_name("Reseller"),
                 focused_partner=pl.when(pl.col("Reseller").is_in(self.MAJOR_PARTENERS))
                 .then("Reseller")
                 .otherwise("Sales Team"),
             )
-            .with_columns(pl.col("focused_partner").str.to_uppercase())
+            .with_columns(
+                pl.col("focused_partner").str.to_uppercase(),
+                cap_name=self.clean_cap_name("Item Model"),
+            )
             .with_columns(
                 clt=pl.col("focused_partner").replace_strict(
                     self.CLT_MAP, default="GNR"
@@ -60,7 +62,7 @@ class POSProcessor(ProcessorAbstract):
             )
             .rename(
                 {
-                    "MFG#": "Item Model",
+                    # "MFG#": "Item Model",
                     "Reseller": "Reseller Name",
                     "Disti": "Distributor",
                     "Qty": "Quantity",

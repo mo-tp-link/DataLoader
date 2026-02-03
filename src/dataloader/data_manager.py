@@ -100,8 +100,8 @@ class DataManager:
             ForecastLoader,
             InventoryLoader,
             POSLoader,
-            PriceLoader,
-            SPALoader,
+            # PriceLoader,
+            # SPALoader,
             StockLoader,
             TransactionLoader,
         )
@@ -111,8 +111,8 @@ class DataManager:
             ForecastProcessor,
             InvProcessor,
             POSProcessor,
-            PriceProcessor,
-            SPAProcessor,
+            # PriceProcessor,
+            # SPAProcessor,
             StockProcessor,
             TransProcessor,
         )
