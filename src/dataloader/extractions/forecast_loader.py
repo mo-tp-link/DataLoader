@@ -1,7 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
 
-import re
 import polars as pl
 
 from dataloader.utils import LoadResult
