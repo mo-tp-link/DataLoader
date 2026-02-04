@@ -1,16 +1,15 @@
 from __future__ import annotations
+
 from .abstract_data_loader import DataLoaderABC
 
 
 class POSLoader(DataLoaderABC):
     sheet_name = "raw data"
-    # file_name = "pos.csv"
 
     date_cols = ["Invoice Date"]
     datetime_cols = ["Created Time"]
     str_cols = [
         "Invoice #",
-        # "Year-Month",
         "Item Model",
         "BU",
         "Category",
@@ -22,8 +21,6 @@ class POSLoader(DataLoaderABC):
         "Disti",
         "Account Manager",
         "Business Segment",
-        # "_Account Manager At the Time",
-        # "_Business Segment At the Time",
         "VIR Exclusion",
         "Sales Team",
         "Buy In Group",
@@ -38,10 +35,3 @@ class POSLoader(DataLoaderABC):
         "Price",
         "Amount",
     ]
-
-
-
-
-if __name__ == "__main__":
-    pos_loader = POSLoader()
-

@@ -212,8 +212,6 @@ class DataManager:
 
         # Merge overrides with inline kwargs (inline takes precedence)
         merged_kwargs = {**self._overrides.get(name, {}), **kwargs, **dep_results}
-        if name == "pos" and "path" not in merged_kwargs:
-            raise ValueError("No POS path provided")
 
         # Load and process
         result = self._load_and_process(source, **merged_kwargs)

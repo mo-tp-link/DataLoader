@@ -83,7 +83,6 @@ class DataLoaderABC(ABC):
                 return self._read_csv(stream, name)
 
     def _load_from_path(self, path: str):
-        print(path)
         p = Path(path)
         if not p.exists():
             print(f"{p} does not exist")
@@ -100,35 +99,45 @@ class DataLoaderABC(ABC):
     def load(self, path: str | Path | None = None, **kwargs) -> LoadResult:
         """
         统一入口。
-        用法:
-        1. loader.load("data.csv")
-        2. loader.load(path="data.xlsx")
-        3. loader.load(byte=file_bytes, name="upload.xlsx")
-        """
 
-        # 1. 优先检查显式的 path 参数
+        Resolution order:
+          1. Explicit ``path`` parameter.
+          2. ``search_dir`` kwarg — scan directory for the most recent file.
+          3. ``byte`` + ``name`` kwargs (API upload / in-memory).
+          4. Class-level ``file_name`` default.
+          5. Empty result fallback.
+        """
+        # 1. search_dir → resolve to a concrete path
+        if path is None:
+            search_dir = kwargs.pop("search_dir", None)
+            if search_dir is not None:
+                path = self._find_latest_file(Path(search_dir))
+
+        # 2. Explicit path (or resolved from search_dir)
         if path:
             return self._load_from_path(path)
-        print("Loader no Path")
 
-        # 2. 检查 kwargs 中的 byte 流 (通常用于 API 上传或内存处理)
-        # 需要同时提供 'byte' 和 'name' (为了判断格式)
+        # 3. Byte stream (API upload)
         if "byte" in kwargs:
             byte_data = kwargs["byte"]
             file_name = kwargs.get("name")
-
             if byte_data and file_name:
                 return self._load_from_stream(byte_data, file_name)
-        print("Loader no Byte")
 
-        # 3. 如果都没有，尝试使用类属性定义的默认 file_name
+        # 4. Class-level default file_name
         if self.file_name:
-            print("Reading file name")
             default_path = self.data_path / self.file_name
-            # 这里加个 exists check 防止报错，或者让 _load_from_path 处理
             return self._load_from_path(default_path)
 
-        # 4. 兜底返回空结果
-        print("Loader no file name")
-        print("Loaded nothing")
+        # 5. Fallback
         return LoadResult(frame=pl.LazyFrame(), context={})
+
+    @staticmethod
+    def _find_latest_file(directory: Path, glob_pattern: str = "*.xlsx") -> Path | None:
+        """Return the most recently modified file matching *glob_pattern* in *directory*."""
+        if not directory.exists():
+            return None
+        files = sorted(
+            directory.glob(glob_pattern), key=lambda p: p.stat().st_mtime, reverse=True
+        )
+        return files[0] if files else None

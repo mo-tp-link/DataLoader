@@ -46,7 +46,6 @@ class ForecastProcessor(ProcessorAbstract):
         )
 
         schema = build_forecast_schema(out)
-        print(schema)
         out = out.with_columns(pl.col(schema.forecast_cols).cast(pl.Int64))
 
         agg = out.group_by(["inv", "cap_name"]).agg(
