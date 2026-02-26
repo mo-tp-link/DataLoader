@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
+
 import polars as pl
 
-from datetime import datetime, timedelta
 from dataloader.schemas.forecast_schema import build_forecast_schema
 from dataloader.utils import LoadResult
+
 from .abstract_processor import ProcessorAbstract
 
 

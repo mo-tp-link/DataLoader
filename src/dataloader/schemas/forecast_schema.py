@@ -1,23 +1,24 @@
 from __future__ import annotations
 
 import re
-import polars as pl
-from typing import List
 from dataclasses import dataclass
+
+import polars as pl
 
 
 @dataclass(frozen=True)
 class ForecastSchema:
-    id_cols: List[str]
-    inv_cols: List[str]
-    forecast_cols: List[str]
-    presentation_cols: List[str]
+    id_cols: list[str]
+    inv_cols: list[str]
+    forecast_cols: list[str]
+    presentation_cols: list[str]
+    # TODO: Need buf cols
 
     @property
     def all_cols(self) -> set[str]:
         """Return all known columns in the schema."""
         return set(
-            self.id_cols + self.inv + self.forecast_cols + self.presentation_cols
+            self.id_cols + self.inv_cols + self.forecast_cols + self.presentation_cols
         )
 
 

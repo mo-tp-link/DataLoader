@@ -111,14 +111,17 @@ class DataLoaderABC(ABC):
         if path is None:
             search_dir = kwargs.pop("search_dir", None)
             if search_dir is not None:
+                print(f"Searching Dir: {search_dir}")
                 path = self._find_latest_file(Path(search_dir))
 
         # 2. Explicit path (or resolved from search_dir)
         if path:
+            print(f"Reading Path: {path}")
             return self._load_from_path(path)
 
         # 3. Byte stream (API upload)
         if "byte" in kwargs:
+            print("Reading byte")
             byte_data = kwargs["byte"]
             file_name = kwargs.get("name")
             if byte_data and file_name:
@@ -127,6 +130,7 @@ class DataLoaderABC(ABC):
         # 4. Class-level default file_name
         if self.file_name:
             default_path = self.data_path / self.file_name
+            print(f"Read defualt path: {default_path}")
             return self._load_from_path(default_path)
 
         # 5. Fallback

@@ -25,7 +25,13 @@ __version__ = "0.1.0"
 
 # Core classes
 from .data_manager import DataManager, DataSource
-from .utils import LoadResult
+from .utils import (
+    LoadResult,
+    clean_cap_name,
+    clean_col_name,
+    clean_company_name,
+    tl_map,
+)
 
 # Base classes for extension
 from .extractions import DataLoaderABC
@@ -47,6 +53,10 @@ __all__ = [
     "get_data",
     "get_all_data",
     "register",
+    "clean_cap_name",
+    "clean_col_name",
+    "clean_company_name",
+    "tl_map",
     # Version
     "__version__",
 ]

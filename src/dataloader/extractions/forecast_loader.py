@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 from pathlib import Path
 
 import polars as pl
 
 from dataloader.utils import LoadResult
+
 from .abstract_data_loader import DataLoaderABC
 
 # TODO: Define these in dataloader.utils or a config module
@@ -29,6 +31,10 @@ class ForecastLoader(DataLoaderABC):
         # 1. 【复用】调用父类解决 IO 问题 (支持 CSV, Excel, Bytes, Path)
         # result 包含了初步加载的 LazyFrame 和基础 context
 
+        if path is None:
+            read_path = self.file_name
+        else:
+            read_path = path
         # result = super().load(path, **kwargs)
         all_dfs = [
             v.lazy().with_columns(
@@ -43,13 +49,12 @@ class ForecastLoader(DataLoaderABC):
                 .cast(pl.Int64)
                 .fill_null(0),
             )
-            for _, v in pl.read_excel(self.file_name, sheet_id=0).items()
+            for _, v in pl.read_excel(read_path, sheet_id=0).items()
         ]
         combined = pl.concat(
             all_dfs,
             how="diagonal",
         )
-        #
         clean_frame = combined.with_columns(
             pl.col(self.str_cols)
             .fill_null("Missing")

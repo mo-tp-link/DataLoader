@@ -1,6 +1,7 @@
 import re
-import polars as pl
 from abc import ABC, abstractmethod
+
+import polars as pl
 
 from dataloader.utils import LoadResult
 
@@ -18,7 +19,8 @@ class ProcessorAbstract(ABC):
         "Amazon.com.ca, Inc.": "AMZ",
     }
 
-    def clean_cap_name(self, col) -> pl.Expr:
+    @staticmethod
+    def clean_cap_name(col) -> pl.Expr:
         return (
             pl.col(col)
             .str.strip_chars()
@@ -27,7 +29,8 @@ class ProcessorAbstract(ABC):
             .alias("cap_name")
         )
 
-    def clean_company_name(self, col) -> pl.Expr:
+    @staticmethod
+    def clean_company_name(col) -> pl.Expr:
         return (
             pl.col(col)
             .str.strip_chars()
@@ -36,7 +39,8 @@ class ProcessorAbstract(ABC):
             .alias("cap_cust")
         )
 
-    def clean_col_name(self, c):
+    @staticmethod
+    def clean_col_name(c):
         pattern = r"[^A-Za-z0-9]"
         return re.sub(r"_+", "_", re.sub(pattern, "_", c)).lower().strip("_")
 
@@ -55,5 +59,5 @@ class ProcessorAbstract(ABC):
         return pl.col(col).replace_strict(self.client_code_map, default="GNR")
 
     @abstractmethod
-    def process(self, lr: LoadResult|None, *args, **kwargs) -> LoadResult|None:
+    def process(self, lr: LoadResult | None, *args, **kwargs) -> LoadResult | None:
         pass

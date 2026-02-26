@@ -6,7 +6,13 @@ class POSSchema:
     # WARNING: Cols below might have duplicates
     id_cols: list[str] = field(default_factory=lambda: ["cap_name", "cap_cust"])
     product_cols: list[str] = field(
-        default_factory=lambda: ["item_model", "bu", "category", "sub_category"]
+        default_factory=lambda: [
+            "item_model",
+            "bu",
+            "category",
+            "sub_category",
+            "base_mfg",
+        ]
     )
     transaction_cols: list[str] = field(
         default_factory=lambda: [
@@ -24,7 +30,7 @@ class POSSchema:
             "vir_exclusion",
             "buy_in_group",
             "focused_partner",
-            "clt"
+            "clt",
         ]
     )
     sales_cols: list[str] = field(

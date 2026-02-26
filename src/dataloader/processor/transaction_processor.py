@@ -118,6 +118,7 @@ class TransProcessor(ProcessorAbstract):
         if stock is not None:
             future = self.build_future(lr, stock)
             lf = pl.concat([future, lf], how="align")
+
         out = (
             lf.with_columns(
                 (pl.col("Item Model").fill_null(pl.col("Item Number")))
@@ -144,4 +145,5 @@ class TransProcessor(ProcessorAbstract):
         cap_cust_pair = out.select(["customer", "cap_cust"])
         out = out.select(schema.all_cols)
         lr.add(schema=schema, cap_name_pair=cap_name_pair, cap_cust_pair=cap_cust_pair)
+        print("Transaction Loaded")
         return LoadResult(frame=out, context=lr.context)

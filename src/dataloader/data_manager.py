@@ -10,10 +10,11 @@ This class provides:
 
 from __future__ import annotations
 
-import polars as pl
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
+
+import polars as pl
 
 if TYPE_CHECKING:
     from dataloader.utils import LoadResult
@@ -48,7 +49,7 @@ class DataManager:
         df = manager.get("stock").frame.collect()
 
         # Access with dependencies auto-resolved
-        trans_result = manager.get("trans")  # automatically loads stock if needed
+        trans_result = manager.get("trans")  # does not require stock unless provided
 
         # Refresh specific data
         manager.invalidate("stock")
@@ -68,7 +69,7 @@ class DataManager:
     """
 
     _sources: dict[str, DataSource]
-    _cache: dict[str, "LoadResult"]
+    _cache: dict[str, LoadResult]
     _data_dir: Path
     _overrides: dict[str, dict[str, Any]]
 
@@ -122,9 +123,8 @@ class DataManager:
         self.register("bo", BOLoader, BOProcessor, dependencies=["inv", "stock"])
         self.register("inv", InventoryLoader, InvProcessor)
         self.register("pos", POSLoader, POSProcessor)
-        self.register(
-            "trans", TransactionLoader, TransProcessor, dependencies=["stock"]
-        )
+        # trans can optionally use stock if explicitly provided
+        self.register("trans", TransactionLoader, TransProcessor)
         # self.register("spa", SPALoader, SPAProcessor)
         # self.register("price", PriceLoader, PriceProcessor)
         self.register("forecast", ForecastLoader, ForecastProcessor)
@@ -153,7 +153,7 @@ class DataManager:
             dependencies=dependencies or [],
         )
 
-    def configure(self, name: str, **kwargs: Any) -> "DataManager":
+    def configure(self, name: str, **kwargs: Any) -> DataManager:
         """
         Configure loading parameters for a data source.
 
@@ -180,7 +180,7 @@ class DataManager:
         *,
         refresh: bool = False,
         **kwargs: Any,
-    ) -> "LoadResult":
+    ) -> LoadResult:
         """
         Get processed data by name.
 
@@ -195,6 +195,7 @@ class DataManager:
         Raises:
             KeyError: If the data source is not registered.
         """
+        print(name)
         if name not in self._sources:
             raise KeyError(
                 f"Unknown data source: {name!r}. Available: {self.available}"
@@ -213,6 +214,7 @@ class DataManager:
         # Merge overrides with inline kwargs (inline takes precedence)
         merged_kwargs = {**self._overrides.get(name, {}), **kwargs, **dep_results}
 
+        print(merged_kwargs)
         # Load and process
         result = self._load_and_process(source, **merged_kwargs)
 
@@ -222,7 +224,7 @@ class DataManager:
 
         return result
 
-    def _load_and_process(self, source: DataSource, **kwargs: Any) -> "LoadResult":
+    def _load_and_process(self, source: DataSource, **kwargs: Any) -> LoadResult:
         """Internal method to load and process a data source."""
         loader = source.loader_cls()
         processor = source.processor_cls()
@@ -230,11 +232,11 @@ class DataManager:
         lr = loader.load(**kwargs)
         return processor.process(lr, **kwargs)
 
-    def __getitem__(self, name: str) -> "LoadResult":
+    def __getitem__(self, name: str) -> LoadResult:
         """Allow dict-like access: manager['stock']."""
         return self.get(name)
 
-    def __getattr__(self, name: str) -> "LoadResult":
+    def __getattr__(self, name: str) -> LoadResult:
         """
         Allow attribute access: manager.stock.
 
@@ -271,7 +273,7 @@ class DataManager:
         """Clear all cached data."""
         self._cache.clear()
 
-    def preload(self, *names: str) -> "DataManager":
+    def preload(self, *names: str) -> DataManager:
         """
         Eagerly load specified data sources into cache.
 

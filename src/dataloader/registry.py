@@ -19,6 +19,7 @@ def get_data(name: str, **kwargs) -> LoadResult:
 
     loader_cls, processor_cls = REGISTRY[name]
     lr = loader_cls().load(**kwargs)
+    print(f"{name} loader completed")
     processor = processor_cls()
     return processor.process(lr, **kwargs)
 

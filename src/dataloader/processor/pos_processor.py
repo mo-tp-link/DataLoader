@@ -53,12 +53,15 @@ class POSProcessor(ProcessorAbstract):
             )
             .with_columns(
                 pl.col("focused_partner").str.to_uppercase(),
-                cap_name=self.clean_cap_name("Item Model"),
+                base_mfg=pl.col("Item Model").str.replace(
+                    r"_(RE|OV|OPENBOX|CACIK|CAXP|CADTL)$", ""
+                ),
             )
             .with_columns(
                 clt=pl.col("focused_partner").replace_strict(
                     self.CLT_MAP, default="GNR"
-                )
+                ),
+                cap_name=self.clean_cap_name("base_mfg"),
             )
             .rename(
                 {
