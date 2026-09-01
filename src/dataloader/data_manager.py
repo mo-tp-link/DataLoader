@@ -35,7 +35,8 @@ class DataSource:
 
 class DataManager:
     """
-    Centralized data management class providing repository-pattern access to all data sources.
+    Centralized data management class,
+    providing repository-pattern access to all data sources.
 
     Usage:
         # Initialize with data directory
@@ -95,7 +96,7 @@ class DataManager:
 
     def _setup_sources(self) -> None:
         """Register all known data sources with their dependencies."""
-        from dataloader.extractions import (
+        from dataloader.extractions import (  # noqa: PLC0415
             AMZPriceLoader,
             BOLoader,
             ForecastLoader,
@@ -106,7 +107,7 @@ class DataManager:
             StockLoader,
             TransactionLoader,
         )
-        from dataloader.processor import (
+        from dataloader.processor import (  # noqa: PLC0415
             AMZPriceProcessor,
             BOProcessor,
             ForecastProcessor,
@@ -195,7 +196,6 @@ class DataManager:
         Raises:
             KeyError: If the data source is not registered.
         """
-        print(name)
         if name not in self._sources:
             raise KeyError(
                 f"Unknown data source: {name!r}. Available: {self.available}"
@@ -214,7 +214,6 @@ class DataManager:
         # Merge overrides with inline kwargs (inline takes precedence)
         merged_kwargs = {**self._overrides.get(name, {}), **kwargs, **dep_results}
 
-        print(merged_kwargs)
         # Load and process
         result = self._load_and_process(source, **merged_kwargs)
 
@@ -343,4 +342,8 @@ class DataManager:
     def __repr__(self) -> str:
         cached_count = len(self._cache)
         total_count = len(self._sources)
-        return f"DataManager(sources={total_count}, cached={cached_count}, data_dir={self._data_dir})"
+        return (
+            f"DataManager(sources={total_count}, "
+            + f"cached={cached_count}, "
+            + f"data_dir={self._data_dir})"
+        )

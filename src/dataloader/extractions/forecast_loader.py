@@ -14,7 +14,8 @@ partner_inventories = {}
 
 
 class ForecastLoader(DataLoaderABC):
-    file_name = "/mnt/c/Users/Mo/OneDrive - TP-Link/Keeper of the Endless Stock, Warden of the Supply Realms, Master of Replenishment, Breaker of Stockouts, Tamer of Chaos and Crates's Shared Folder/Forecast Shared.xlsx"
+    # file_name = "/mnt/c/Users/Mo/OneDrive - TP-Link/Keeper of the Endless Stock, Warden of the Supply Realms, Master of Replenishment, Breaker of Stockouts, Tamer of Chaos and Crates's Shared Folder/CN Forecast.xlsx"
+    # ce_name = "/mnt/c/Users/Mo/OneDrive - TP-Link/Keeper of the Endless Stock, Warden of the Supply Realms, Master of Replenishment, Breaker of Stockouts, Tamer of Chaos and Crates's Shared Folder/CE Forecast.xlsx"
 
     str_cols = [
         "INV",
@@ -32,7 +33,7 @@ class ForecastLoader(DataLoaderABC):
         # result 包含了初步加载的 LazyFrame 和基础 context
 
         if path is None:
-            read_path = self.file_name
+            raise ValueError("No Path provided")
         else:
             read_path = path
         # result = super().load(path, **kwargs)

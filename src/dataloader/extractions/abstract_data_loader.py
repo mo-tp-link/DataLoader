@@ -1,8 +1,10 @@
 from __future__ import annotations
-import polars as pl
+
 from abc import ABC
 from pathlib import Path
 from typing import IO
+
+import polars as pl
 
 from dataloader.utils import LoadResult
 
@@ -90,9 +92,9 @@ class DataLoaderABC(ABC):
 
         suffix = p.suffix.lower()
         if suffix == ".xlsx":
-            return self._read_excel(p, p.name)
+            return self._read_excel(p, p)
         if suffix == ".csv":
-            return self._read_csv(p, p.name)
+            return self._read_csv(p, p)
 
         return LoadResult(frame=pl.LazyFrame(), context={})
 
@@ -141,7 +143,5 @@ class DataLoaderABC(ABC):
         """Return the most recently modified file matching *glob_pattern* in *directory*."""
         if not directory.exists():
             return None
-        files = sorted(
-            directory.glob(glob_pattern), key=lambda p: p.stat().st_mtime, reverse=True
-        )
+        files = sorted(directory.glob(glob_pattern), key=lambda p: p.stat().st_mtime, reverse=True)
         return files[0] if files else None

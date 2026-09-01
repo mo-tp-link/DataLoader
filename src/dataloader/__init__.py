@@ -30,6 +30,7 @@ from .utils import (
     clean_cap_name,
     clean_col_name,
     clean_company_name,
+    clean_cap_name_str,
     tl_map,
 )
 
@@ -59,4 +60,5 @@ __all__ = [
     "tl_map",
     # Version
     "__version__",
+    "clean_cap_name_str",
 ]

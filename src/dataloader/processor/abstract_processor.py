@@ -48,12 +48,7 @@ class ProcessorAbstract(ABC):
         pass
 
     def clean_cat_str(self, c):
-        return (
-            pl.col(c)
-            .str.strip_chars()
-            .str.to_uppercase()
-            .str.replace_all(r"[^A-Z0-9]", "")
-        )
+        return pl.col(c).str.strip_chars().str.to_uppercase().str.replace_all(r"[^A-Z0-9]", "")
 
     def build_client_code(self, col) -> pl.Expr:
         return pl.col(col).replace_strict(self.client_code_map, default="GNR")
